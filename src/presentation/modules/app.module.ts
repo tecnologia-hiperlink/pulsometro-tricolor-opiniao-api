@@ -21,12 +21,12 @@ dotenv.config();
       {
         name: 'default',
         ttl: 60000, // 1 minuto
-        limit: 1000, // 1000 requisições por minuto (mais generoso)
+        limit: 60, // 60 requisições por minuto por IP
       },
       {
         name: 'vote',
         ttl: 60000, // 1 minuto
-        limit: 5, // 5 votos por minuto por IP
+        limit: 3, // 3 votos por minuto por IP
       },
     ]),
     ClientsModule,

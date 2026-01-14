@@ -13,13 +13,13 @@ export class PollsController {
   @Get()
   @ApiOperation({ summary: 'Lista todas as enquetes' })
   @ApiResponse({ status: 200, description: 'Lista de enquetes', type: [PollListItemDto] })
-  @Throttle({ default: { limit: 1000, ttl: 60000 } }) // Limite mais alto para leitura
+  @Throttle({ default: { limit: 120, ttl: 60000 } }) // 120 requisições por minuto por IP para leitura
   async findAll(): Promise<PollListItemDto[]> {
     return this.pollsService.findAll();
   }
 
   @Get(':id')
-  @Throttle({ default: { limit: 1000, ttl: 60000 } }) // Limite mais alto para leitura
+  @Throttle({ default: { limit: 120, ttl: 60000 } }) // 120 requisições por minuto por IP para leitura
   @ApiOperation({ summary: 'Busca detalhes de uma enquete com histórico' })
   @ApiParam({ name: 'id', type: Number, description: 'ID da enquete' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Página do histórico (padrão: 1)' })
@@ -36,7 +36,7 @@ export class PollsController {
 
   @Post(':id/vote')
   @UseGuards(ThrottlerGuard)
-  @Throttle({ vote: { limit: 5, ttl: 60000 } })
+  @Throttle({ vote: { limit: 3, ttl: 60000 } }) // 3 votos por minuto por IP
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Registra um voto em uma enquete' })
   @ApiParam({ name: 'id', type: Number, description: 'ID da enquete' })
