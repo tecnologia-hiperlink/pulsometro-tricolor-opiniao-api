@@ -25,9 +25,6 @@ export class PollSuggestionOrmEntity {
   @Column({ type: 'varchar', length: 255, nullable: true, name: 'option_b' })
   optionB: string;
 
-  @Column({ type: 'text', name: 'suggestion_text' })
-  suggestionText: string;
-
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 }

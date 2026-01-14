@@ -26,8 +26,4 @@ export class CreateSuggestionDto {
   @IsNotEmpty({ message: 'Opção B é obrigatória' })
   @IsString()
   optionB: string;
-
-  @ApiProperty({ description: 'Texto completo da sugestão (legado, pode ser gerado automaticamente)', required: false })
-  @IsString()
-  suggestionText?: string;
 }
