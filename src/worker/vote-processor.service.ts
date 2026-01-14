@@ -7,6 +7,7 @@ import { EmailNormalizationService } from '@/infrastructure/services/email-norma
 import { VoteOrmEntity } from '@/infrastructure/database/entities/vote.orm-entity';
 import { ContactOrmEntity } from '@/infrastructure/database/entities/contact.orm-entity';
 import { PollResultOrmEntity } from '@/infrastructure/database/entities/poll-result.orm-entity';
+import { PollOrmEntity } from '@/infrastructure/database/entities/poll.orm-entity';
 
 interface VoteMessage {
   pollId: number;
@@ -26,6 +27,8 @@ export class VoteProcessorService {
     private contactRepository: Repository<ContactOrmEntity>,
     @InjectRepository(PollResultOrmEntity)
     private pollResultRepository: Repository<PollResultOrmEntity>,
+    @InjectRepository(PollOrmEntity)
+    private pollRepository: Repository<PollOrmEntity>,
     private redisService: RedisService,
     private hmacService: HmacService,
     private emailNormalizationService: EmailNormalizationService,
@@ -128,8 +131,8 @@ export class VoteProcessorService {
       await this.redisService.lpush(`poll:${pollId}:history`, historyItem);
       await this.redisService.ltrim(`poll:${pollId}:history`, 0, 499); // Manter últimos 500
 
-      // 5.3. Invalidar polls:public (será recalculado no próximo GET)
-      await this.redisService.del('polls:public');
+      // 5.3. Atualizar polls:public diretamente (recarregar do banco e atualizar cache)
+      await this.updatePollsPublicCache();
 
       // 5.4. Invalidar poll:{id}:public (será recalculado no próximo GET)
       await this.redisService.del(`poll:${pollId}:public`);
@@ -138,6 +141,49 @@ export class VoteProcessorService {
     } catch (error) {
       console.error(`Erro ao processar voto:`, error);
       throw error; // Re-throw para que o worker possa fazer retry
+    }
+  }
+
+  /**
+   * Atualiza o cache polls:public recarregando do banco
+   */
+  private async updatePollsPublicCache(): Promise<void> {
+    try {
+      const polls = await this.pollRepository.find({
+        where: { isActive: true },
+        order: { createdAt: 'DESC' },
+      });
+
+      const pollsWithStats = await Promise.all(
+        polls.map(async (poll) => {
+          const result = await this.pollResultRepository.findOne({
+            where: { pollId: poll.id },
+          });
+
+          const stats = result || {
+            countA: 0,
+            countB: 0,
+            total: 0,
+          };
+
+          return {
+            id: poll.id,
+            question: poll.title,
+            optionALabel: poll.optionALabel,
+            optionBLabel: poll.optionBLabel,
+            votesFor: stats.countA,
+            votesAgainst: stats.countB,
+            totalVotes: stats.total,
+            createdAt: poll.createdAt,
+          };
+        }),
+      );
+
+      // Atualizar cache
+      await this.redisService.set('polls:public', JSON.stringify(pollsWithStats), 300); // 5 min TTL
+    } catch (error) {
+      console.error('Erro ao atualizar cache polls:public:', error);
+      // Não falhar o processamento do voto se o cache falhar
     }
   }
 }
