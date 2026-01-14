@@ -12,11 +12,17 @@ export class SuggestionsService {
   ) {}
 
   async create(createSuggestionDto: CreateSuggestionDto): Promise<{ message: string }> {
-    // Formatar texto da sugestão com nome e email
-    const formattedText = `Nome: ${createSuggestionDto.name}\nEmail: ${createSuggestionDto.email}\n\n${createSuggestionDto.suggestionText}`;
+    // Gerar suggestionText se não fornecido (para compatibilidade)
+    const suggestionText = createSuggestionDto.suggestionText || 
+      `Pergunta: ${createSuggestionDto.question}\nOpção A: ${createSuggestionDto.optionA}\nOpção B: ${createSuggestionDto.optionB}`;
 
     const suggestion = this.suggestionRepository.create({
-      suggestionText: formattedText,
+      name: createSuggestionDto.name,
+      email: createSuggestionDto.email,
+      question: createSuggestionDto.question,
+      optionA: createSuggestionDto.optionA,
+      optionB: createSuggestionDto.optionB,
+      suggestionText,
     });
 
     await this.suggestionRepository.save(suggestion);

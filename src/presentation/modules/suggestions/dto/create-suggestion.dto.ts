@@ -12,8 +12,22 @@ export class CreateSuggestionDto {
   @IsEmail({}, { message: 'E-mail inválido' })
   email: string;
 
-  @ApiProperty({ description: 'Texto da sugestão (pergunta + opções)', example: 'Pergunta: Você é a favor? Opção A: Sim, Opção B: Não' })
-  @IsNotEmpty({ message: 'Texto da sugestão é obrigatório' })
+  @ApiProperty({ description: 'Pergunta da enquete', example: 'Você é a favor do impeachment?' })
+  @IsNotEmpty({ message: 'Pergunta é obrigatória' })
   @IsString()
-  suggestionText: string;
+  question: string;
+
+  @ApiProperty({ description: 'Opção A da enquete', example: 'A favor' })
+  @IsNotEmpty({ message: 'Opção A é obrigatória' })
+  @IsString()
+  optionA: string;
+
+  @ApiProperty({ description: 'Opção B da enquete', example: 'Contra' })
+  @IsNotEmpty({ message: 'Opção B é obrigatória' })
+  @IsString()
+  optionB: string;
+
+  @ApiProperty({ description: 'Texto completo da sugestão (legado, pode ser gerado automaticamente)', required: false })
+  @IsString()
+  suggestionText?: string;
 }
