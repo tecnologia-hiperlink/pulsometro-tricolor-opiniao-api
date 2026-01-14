@@ -97,10 +97,20 @@ export class PollsService {
     let history: VoteHistoryDto[] = [];
 
     if (cachedDetail && cachedHistory.length > 0) {
-      // Usar cache
+      // Usar cache, mas validar que os dados estão consistentes
       const detail = JSON.parse(cachedDetail);
       stats = detail.stats;
-      history = cachedHistory.map((item) => JSON.parse(item));
+      // Remover duplicados do histórico do cache baseado no ID
+      const historyMap = new Map<number, VoteHistoryDto>();
+      cachedHistory.forEach((item) => {
+        const parsed = JSON.parse(item);
+        // Usar ID numérico como chave para evitar duplicados
+        const voteId = typeof parsed.id === 'string' ? parseInt(parsed.id) : parsed.id;
+        if (!historyMap.has(voteId)) {
+          historyMap.set(voteId, parsed);
+        }
+      });
+      history = Array.from(historyMap.values());
     } else {
       // Fallback: buscar do banco
       const result = await this.pollResultRepository.findOne({

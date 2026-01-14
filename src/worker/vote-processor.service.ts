@@ -46,6 +46,7 @@ export class VoteProcessorService {
 
     try {
       // 1. Tentar inserir voto (violação UNIQUE = idempotência, ok)
+      let savedVote: VoteOrmEntity;
       try {
         const vote = this.voteRepository.create({
           pollId,
@@ -53,7 +54,7 @@ export class VoteProcessorService {
           emailFingerprint,
           emailPrefix2,
         });
-        await this.voteRepository.save(vote);
+        savedVote = await this.voteRepository.save(vote);
       } catch (error: any) {
         // Se violar UNIQUE, significa que já foi processado (idempotência)
         if (error.code === '23505') {
@@ -121,12 +122,12 @@ export class VoteProcessorService {
         86400, // 1 dia
       );
 
-      // 5.2. Adicionar ao histórico (poll:{id}:history)
+      // 5.2. Adicionar ao histórico (poll:{id}:history) usando o ID real do voto salvo
       const historyItem = JSON.stringify({
-        id: Date.now(), // ID temporário, será substituído quando buscar do DB
+        id: savedVote.id, // Usar o ID real do voto salvo no banco
         option,
         emailPrefix: emailPrefix2 + '**',
-        createdAt: new Date().toISOString(),
+        createdAt: savedVote.createdAt.toISOString(),
       });
       await this.redisService.lpush(`poll:${pollId}:history`, historyItem);
       await this.redisService.ltrim(`poll:${pollId}:history`, 0, 499); // Manter últimos 500
