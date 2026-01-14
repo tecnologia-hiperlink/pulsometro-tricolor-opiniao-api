@@ -36,7 +36,7 @@ export class PollsController {
 
   @Post(':id/vote')
   @UseGuards(ThrottlerGuard)
-  @Throttle({ vote: { limit: 3, ttl: 60000 } }) // 3 votos por minuto por IP
+  @Throttle({ vote: { limit: 10, ttl: 60000 } }) // 10 votos por minuto por IP
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Registra um voto em uma enquete' })
   @ApiParam({ name: 'id', type: Number, description: 'ID da enquete' })
