@@ -4,6 +4,7 @@ module.exports = {
       name: 'tricolor-api',
       script: 'dist/presentation/main.js',
       cwd: '/var/www/html/pulsometrotricolor/pulsometro-tricolor-opiniao-api',
+      interpreter: '/home/ubuntu/.nvm/versions/node/v20.19.6/bin/node',
       instances: 1,
       exec_mode: 'fork',
       env: {
@@ -22,6 +23,7 @@ module.exports = {
       name: 'tricolor-worker',
       script: 'dist/worker/worker.js',
       cwd: '/var/www/html/pulsometrotricolor/pulsometro-tricolor-opiniao-api',
+      interpreter: '/home/ubuntu/.nvm/versions/node/v20.19.6/bin/node',
       instances: 1,
       exec_mode: 'fork',
       env: {
