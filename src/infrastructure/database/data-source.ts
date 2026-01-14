@@ -13,7 +13,11 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_DATABASE || 'spfc',
   synchronize: false, // Sempre usar migrations
   logging: process.env.NODE_ENV === 'development' || false,
-  entities: [__dirname + '/entities/*.{ts,js}'],
+  entities: [
+    __dirname + '/entities/poll*.{ts,js}',
+    __dirname + '/entities/vote*.{ts,js}',
+    __dirname + '/entities/contact*.{ts,js}',
+  ],
   migrations: [__dirname + '/migrations/*.{ts,js}'],
 });
 

@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeor
 
 @Entity('polls')
 export class PollOrmEntity {
-  @PrimaryGeneratedColumn('bigint')
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column({ type: 'text' })

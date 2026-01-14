@@ -10,9 +10,9 @@ import {
 @Entity('contacts')
 @Unique(['emailNormalized'])
 @Unique(['emailGlobalFingerprint'])
-@Index(['createdAt'], { order: { createdAt: 'DESC' } })
+@Index('idx_contacts_created_at_desc', ['createdAt'])
 export class ContactOrmEntity {
-  @PrimaryGeneratedColumn('bigint')
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column({ type: 'text' })

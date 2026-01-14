@@ -7,7 +7,7 @@ import {
 
 @Entity('poll_suggestions')
 export class PollSuggestionOrmEntity {
-  @PrimaryGeneratedColumn('bigint')
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column({ type: 'text', name: 'suggestion_text' })

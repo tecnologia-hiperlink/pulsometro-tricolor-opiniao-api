@@ -12,10 +12,10 @@ import { PollOrmEntity } from './poll.orm-entity';
 
 @Entity('votes')
 @Unique(['pollId', 'emailFingerprint'])
-@Index(['pollId', 'createdAt'], { order: { createdAt: 'DESC' } })
-@Index(['pollId', 'optionSelected'])
+@Index('idx_votes_poll_created_at_desc', ['pollId', 'createdAt'])
+@Index('idx_votes_poll_option', ['pollId', 'optionSelected'])
 export class VoteOrmEntity {
-  @PrimaryGeneratedColumn('bigint')
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column({ type: 'bigint', name: 'poll_id' })
