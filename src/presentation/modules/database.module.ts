@@ -17,7 +17,11 @@ dotenv.config();
       database: process.env.DB_DATABASE || 'spfc',
       synchronize: false,
       logging: process.env.NODE_ENV === 'development' || false,
-      entities: [join(__dirname, '../../infrastructure/database/entities/*.{ts,js}')],
+      entities: [
+        join(__dirname, '../../infrastructure/database/entities/poll*.{ts,js}'),
+        join(__dirname, '../../infrastructure/database/entities/vote*.{ts,js}'),
+        join(__dirname, '../../infrastructure/database/entities/contact*.{ts,js}'),
+      ],
       migrations: [join(__dirname, '../../infrastructure/database/migrations/*.{ts,js}')],
     }),
   ],

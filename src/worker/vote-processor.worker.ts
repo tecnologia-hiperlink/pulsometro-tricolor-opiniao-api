@@ -6,7 +6,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-async function bootstrap() {
+export async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const voteProcessor = app.get(VoteProcessorService);
   const redisService = app.get(RedisService);
