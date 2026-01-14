@@ -12,6 +12,8 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/presentation/main.js",
+    "worker": "ts-node -r tsconfig-paths/register src/worker/worker.ts",
+    "worker:prod": "node dist/worker/worker.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "npm run typeorm -- migration:generate src/infrastructure/database/migrations/Migration",
