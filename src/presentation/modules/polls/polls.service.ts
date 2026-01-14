@@ -35,8 +35,12 @@ export class PollsService {
    */
   async findAll(): Promise<PollListItemDto[]> {
     const cached = await this.redisService.get('polls:public');
-    if (cached) {
-      return JSON.parse(cached);
+    if (cached && cached.trim() !== '' && cached !== '[]') {
+      try {
+        return JSON.parse(cached);
+      } catch {
+        // Se falhar ao parsear, continuar com fallback
+      }
     }
 
     // Fallback: buscar do banco e popular cache

@@ -13,11 +13,13 @@ export class PollsController {
   @Get()
   @ApiOperation({ summary: 'Lista todas as enquetes' })
   @ApiResponse({ status: 200, description: 'Lista de enquetes', type: [PollListItemDto] })
+  @Throttle({ default: { limit: 1000, ttl: 60000 } }) // Limite mais alto para leitura
   async findAll(): Promise<PollListItemDto[]> {
     return this.pollsService.findAll();
   }
 
   @Get(':id')
+  @Throttle({ default: { limit: 1000, ttl: 60000 } }) // Limite mais alto para leitura
   @ApiOperation({ summary: 'Busca detalhes de uma enquete com histórico' })
   @ApiParam({ name: 'id', type: Number, description: 'ID da enquete' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Página do histórico (padrão: 1)' })

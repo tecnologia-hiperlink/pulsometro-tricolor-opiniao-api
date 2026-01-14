@@ -21,7 +21,7 @@ dotenv.config();
       {
         name: 'default',
         ttl: 60000, // 1 minuto
-        limit: 100, // 100 requisições por minuto
+        limit: 1000, // 1000 requisições por minuto (mais generoso)
       },
       {
         name: 'vote',
