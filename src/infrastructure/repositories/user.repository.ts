@@ -36,7 +36,9 @@ export class UserRepository implements IUserRepository {
   }
 
   async update(id: string, user: Partial<IUser>): Promise<IUser> {
-    await this.repo.update({ id }, user);
+    // Remover propriedades relacionais antes do update
+    const { clients, ...updateData } = user;
+    await this.repo.update({ id }, updateData as any);
     return await this.findById(id);
   }
 

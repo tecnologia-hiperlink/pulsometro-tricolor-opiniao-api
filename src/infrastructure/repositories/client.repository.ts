@@ -27,7 +27,9 @@ export class ClientRepository implements IClientRepository {
   }
 
   async update(id: string, client: Partial<IClient>): Promise<IClient> {
-    await this.repo.update({ id }, client);
+    // Remover propriedades relacionais antes do update
+    const { user, pages, ...updateData } = client;
+    await this.repo.update({ id }, updateData as any);
     return await this.findById(id);
   }
 

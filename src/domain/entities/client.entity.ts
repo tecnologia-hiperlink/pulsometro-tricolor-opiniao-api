@@ -10,7 +10,7 @@ export class IClient {
   createdBy: string;
 
   user: IUser;
-  pages: IPage[];
+  pages?: IPage[]; // Opcional - não usado no projeto Pulsômetro
 
   createdAt: Date;
   updatedAt: Date;

@@ -34,6 +34,9 @@ export class ClientOrmEntity implements IClient {
   @JoinColumn({ name: 'userId' })
   user: UserOrmEntity;
 
+  // Propriedade opcional para compatibilidade com IClient
+  pages?: any[];
+
   @CreateDateColumn()
   createdAt: Date;
 
