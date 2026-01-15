@@ -8,7 +8,7 @@ import { VotePollDto } from './dto/vote-poll.dto';
 @ApiTags('polls')
 @Controller('api/polls')
 export class PollsController {
-  constructor(private readonly pollsService: PollsService) {}
+  constructor(private readonly pollsService: PollsService) { }
 
   @Get()
   @ApiOperation({ summary: 'Lista todas as enquetes' })
@@ -36,7 +36,7 @@ export class PollsController {
 
   @Post(':id/vote')
   @UseGuards(ThrottlerGuard)
-  @Throttle({ vote: { limit: 10, ttl: 60000 } }) // 10 votos por minuto por IP
+  @Throttle({ vote: { limit: 100, ttl: 60000 } }) // 100 votos por minuto por IP
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Registra um voto em uma enquete' })
   @ApiParam({ name: 'id', type: Number, description: 'ID da enquete' })
