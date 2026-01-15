@@ -28,7 +28,7 @@ export class PollsService {
     private redisService: RedisService,
     private hmacService: HmacService,
     private emailNormalizationService: EmailNormalizationService,
-  ) {}
+  ) { }
 
   /**
    * Lista todas as enquetes (lê do Redis cache)
@@ -66,9 +66,9 @@ export class PollsService {
           question: poll.title,
           optionALabel: poll.optionALabel,
           optionBLabel: poll.optionBLabel,
-          votesFor: stats.countA,
-          votesAgainst: stats.countB,
-          totalVotes: stats.total,
+          votesFor: Number(stats.countA),
+          votesAgainst: Number(stats.countB),
+          totalVotes: Number(stats.total),
           createdAt: poll.createdAt,
         };
       }),
@@ -123,13 +123,15 @@ export class PollsService {
         total: 0,
       };
 
-      const total = dbStats.total;
+      const total = Number(dbStats.total);
+      const countA = Number(dbStats.countA);
+      const countB = Number(dbStats.countB);
       stats = {
-        countA: dbStats.countA,
-        countB: dbStats.countB,
+        countA,
+        countB,
         total,
-        percentageA: total > 0 ? Math.round((dbStats.countA / total) * 100) : 50,
-        percentageB: total > 0 ? Math.round((dbStats.countB / total) * 100) : 50,
+        percentageA: total > 0 ? Math.round((countA / total) * 100) : 0,
+        percentageB: total > 0 ? Math.round((countB / total) * 100) : 0,
       };
 
       // Buscar histórico do banco

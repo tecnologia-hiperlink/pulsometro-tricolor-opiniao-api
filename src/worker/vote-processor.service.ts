@@ -32,7 +32,7 @@ export class VoteProcessorService {
     private redisService: RedisService,
     private hmacService: HmacService,
     private emailNormalizationService: EmailNormalizationService,
-  ) {}
+  ) { }
 
   /**
    * Processa uma mensagem de voto do Redis Stream
@@ -97,10 +97,10 @@ export class VoteProcessorService {
           total: 1,
         });
       } else {
-        // Incrementar contadores
-        result.countA += option === 'A' ? 1 : 0;
-        result.countB += option === 'B' ? 1 : 0;
-        result.total += 1;
+        // Incrementar contadores (converter para number para evitar concatenação de string - bigint retorna como string)
+        result.countA = Number(result.countA) + (option === 'A' ? 1 : 0);
+        result.countB = Number(result.countB) + (option === 'B' ? 1 : 0);
+        result.total = Number(result.total) + 1;
       }
 
       await this.pollResultRepository.save(result);
@@ -116,8 +116,8 @@ export class VoteProcessorService {
           countA: stats.countA,
           countB: stats.countB,
           total: stats.total,
-          percentageA: stats.total > 0 ? Math.round((stats.countA / stats.total) * 100) : 50,
-          percentageB: stats.total > 0 ? Math.round((stats.countB / stats.total) * 100) : 50,
+          percentageA: stats.total > 0 ? Math.round((stats.countA / stats.total) * 100) : 0,
+          percentageB: stats.total > 0 ? Math.round((stats.countB / stats.total) * 100) : 0,
         }),
         86400, // 1 dia
       );
@@ -172,9 +172,9 @@ export class VoteProcessorService {
             question: poll.title,
             optionALabel: poll.optionALabel,
             optionBLabel: poll.optionBLabel,
-            votesFor: stats.countA,
-            votesAgainst: stats.countB,
-            totalVotes: stats.total,
+            votesFor: Number(stats.countA),
+            votesAgainst: Number(stats.countB),
+            totalVotes: Number(stats.total),
             createdAt: poll.createdAt,
           };
         }),
